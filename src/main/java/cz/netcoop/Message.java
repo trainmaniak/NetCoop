@@ -5,42 +5,53 @@ import cz.netcoop.Abilities.IAbility;
 import java.util.List;
 
 public class Message {
-    public IDevice destination = null;
-    public IDevice source = null;
-    public IAbility ability = null;
-    public String data;
+    private IDevice destination = null;
+    private IDevice source = null;
+    private IAbility ability = null;
+    private String data;
 
-    public String createMessage() {
+    public Message(IDevice destination, IDevice source, IAbility ability, String data) {
+        this.destination = destination;
+        this.source = source;
+        this.ability = ability;
+        this.data = data;
+    }
+
+    public String assemble() {
         return String.valueOf(destination.getAddress())
                 + String.valueOf(source.getAddress())
                 + String.valueOf(ability.getId())
                 + data;
     }
 
-    public static Message parseMessage(List<IDevice> devices, List<IAbility> abilities, String message) {
-        Message newMessage = new Message();
+    public static Message parseMessage(String message) {
+        AppNetCoop app = AppNetCoop.getApp();
 
-        int destinationNumber = Integer.parseInt(message.substring(0, 3));
-        int sourceNumber = Integer.parseInt(message.substring(4, 7));
-        int abilityId = Integer.parseInt(message.substring(8, 11));
-        newMessage.data = message.substring(12, message.length() - 1);
+        int destinationNumber = Integer.parseInt(message.substring(0, 4));
+        int sourceNumber      = Integer.parseInt(message.substring(4, 8));
+        int abilityId         = Integer.parseInt(message.substring(8, 12));
+        String data           = message.substring(12, message.length());
 
-        for (IDevice dev : devices) {
-            if (newMessage.destination == null && dev.getAddress() == destinationNumber) {
-                newMessage.destination = dev;
+        IDevice destination = null;
+        IDevice source = null;
+        for (IDevice dev : app.getDeviceList()) {
+            if (destination == null && dev.getAddress() == destinationNumber) {
+                destination = dev;
             }
 
-            if (newMessage.source == null && dev.getAddress() == sourceNumber) {
-                newMessage.source = dev;
+            if (source == null && dev.getAddress() == sourceNumber) {
+                source = dev;
             }
         }
 
-        for (IAbility ab : abilities) {
+        IAbility ability = null;
+        for (IAbility ab : app.getAbilityList()) {
             if (ab.getId() == abilityId) {
-                newMessage.ability = ab;
+                ability = ab;
+                break;
             }
         }
 
-        return newMessage;
+        return new Message(destination, source, ability, data);
     }
 }

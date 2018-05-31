@@ -1,3 +1,4 @@
+/*
 package cz.netcoop;
 
 import cz.netcoop.ServingDaemon.*;
@@ -18,8 +19,8 @@ public class AppNetCoopServer extends AppNetCoop {
     public AppNetCoopServer() {
         super();
 
-        serveOther = new SServeOther(this);
-        serveListener = new SServeListener(this);
+        serveOther = new SServeOther();
+        serveListener = new SServeListener();
 
         router = new Router();
 
@@ -33,3 +34,4 @@ public class AppNetCoopServer extends AppNetCoop {
         serveListener.run();
     }
 }
+*/

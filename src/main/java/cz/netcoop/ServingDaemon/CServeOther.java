@@ -7,9 +7,6 @@ import cz.netcoop.Exceptions.ConnectionException;
 import java.io.IOException;
 
 public class CServeOther extends AServeDaemon {
-    public CServeOther(AppNetCoopClient appNetCoopClient) {
-        super(appNetCoopClient);
-    }
 
     /**
      * In cycle wait on request and answer
@@ -20,11 +17,10 @@ public class CServeOther extends AServeDaemon {
 
         while (true) {
             try {
-                Connector conn = getAppNetCoop().getConnector();
+                Connector conn = getApp().getConnector();
 
                 Message request = conn.receive(conn.getSessionList().get(0).getPortOther());
-                Message answer = ((AppNetCoopClient)getAppNetCoop())
-                        .getReplier().getAnswer(request);
+                Message answer = null; //getApp().getReplier().getAnswer(request);
 
                 conn.send(conn.getSessionList().get(0).getPortOther(), answer);
             } catch (IOException | ConnectionException e) {

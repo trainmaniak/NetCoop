@@ -1,34 +1,62 @@
 package cz.netcoop.Connectors;
 
 import cz.netcoop.*;
-import cz.netcoop.Abilities.IAbility;
 import cz.netcoop.Exceptions.ConnectionException;
 
 import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
+import java.util.Random;
 
 public class Connector {
     public static final int PORT_SERVE_ME = 6472;
     public static final int PORT_SERVE_OTHER = 6473;
     public static final int PORT_EXPLORE = 6470;
 
-    //private boolean connected = false;
+    private DatagramSocket socketUDPtx = null;
+    private DatagramSocket socketUDPrx = null;
 
-    private List<IDevice> deviceList;
-    private List<IAbility> abilityList;
+    private int myAddress;
+    private List<InetAddress> myNetAddresses = new ArrayList<InetAddress>();
 
     private List<Session> sessionList = new ArrayList<>();
+
+    public int getMyAddress() {
+        return myAddress;
+    }
+
+    public InetAddress getMyNetAddress() {
+        return myNetAddresses.get(0);
+    }
 
     public List<Session> getSessionList() {
         return sessionList;
     }
 
-    public Connector(List<IDevice> deviceList, List<IAbility> abilityList) {
-        this.deviceList = deviceList;
-        this.abilityList = abilityList;
+    public Connector() {
+        myAddress = new Random().nextInt(10000);
+
+        // get my ip
+        try {
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                NetworkInterface iface = interfaces.nextElement();
+                // filters out 127.0.0.1 and inactive interfaces
+                if (iface.isLoopback() || !iface.isUp())
+                    continue;
+
+                Enumeration<InetAddress> addresses = iface.getInetAddresses();
+                while(addresses.hasMoreElements()) {
+                    InetAddress addr = addresses.nextElement();
+                    myNetAddresses.add(addr);
+                    DebugPrinter.print("my IP", addr.getHostName() + " - " + addr.getHostAddress());
+                }
+            }
+        } catch (SocketException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Session getSession(IDevice device) {
@@ -119,7 +147,7 @@ public class Connector {
             }
 
             String rawMessage = port.getReader().readLine();
-            Message message = new Message().parseMessage(deviceList, abilityList, rawMessage);
+            Message message = Message.parseMessage(rawMessage);
 
             DebugPrinter.print("Received msg", rawMessage);
             return message;
@@ -148,7 +176,7 @@ public class Connector {
         */
 
         try {
-            String rawMessage = message.createMessage();
+            String rawMessage = message.assemble();
 
             port.getWriter().write(rawMessage);
             port.getWriter().flush();
@@ -197,27 +225,46 @@ public class Connector {
         DebugPrinter.print("Reply from other device", "ok");
     }
 
-    public void sendUDP(String data) throws IOException {
-        DatagramSocket socket = new DatagramSocket();
-        byte[] buf = data.getBytes(); // new byte[256];
+    public void sendUDP(MeetingMessage message) throws IOException {
+        if (socketUDPtx == null) {
+            socketUDPtx = new DatagramSocket();
+        }
+
+        String messageStr = message.assemble();
+
+        byte[] buf = messageStr.getBytes(); // new byte[256];
 
         DatagramPacket packet = new DatagramPacket(buf, buf.length, InetAddress.getByName("192.168.122.255"), PORT_EXPLORE);
-        socket.send(packet);
-        DebugPrinter.print("data sended", "");
-        socket.close();
+        socketUDPtx.send(packet);
+        DebugPrinter.print("send done", messageStr);
     }
 
-    public String receiveUDP() throws IOException {
-        DatagramSocket socket = new DatagramSocket(PORT_EXPLORE);
+    public MeetingMessage receiveUDP() throws IOException {
+        if (socketUDPrx == null) {
+            socketUDPrx = new DatagramSocket(PORT_EXPLORE);
+        }
+
         byte[] buf = new byte[256];
 
         DatagramPacket packet = new DatagramPacket(buf, buf.length);
-        DebugPrinter.print("waiting....", "");
-        socket.receive(packet);
-        socket.close();
+        DebugPrinter.print("receiving....", "");
+        socketUDPrx.receive(packet);
 
-        String received = new String(packet.getData(), 0, packet.getLength());
-        DebugPrinter.print("waiting done", received);
-        return received;
+        String messageStr = new String(packet.getData(), 0, packet.getLength());
+        DebugPrinter.print("receive done", messageStr + " - sender: " + packet.getAddress());
+
+        for (InetAddress addr : myNetAddresses) {
+            String addrStrWhole = addr.toString();
+            String addrString = addrStrWhole.substring(addrStrWhole.indexOf('/'), addrStrWhole.length());
+            if (addrString.equals(packet.getAddress().toString())) {
+                return null;
+            }
+        }
+
+        return MeetingMessage.Builder.parseMessage(messageStr);
+    }
+
+    public void closeUDP(DatagramSocket socket) {
+        socket.close();
     }
 }

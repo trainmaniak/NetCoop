@@ -7,9 +7,6 @@ import cz.netcoop.Exceptions.ConnectionException;
 import java.io.IOException;
 
 public class SServeOther extends AServeDaemon {
-    public SServeOther(AppNetCoopServer appNetCoopServer) {
-        super(appNetCoopServer);
-    }
 
     private void foo() {
 
@@ -19,7 +16,7 @@ public class SServeOther extends AServeDaemon {
     public void run() {
         while (true) {
             try {
-                Connector conn = getAppNetCoop().getConnector();
+                Connector conn = getConnector();
 
                 Message message = conn.receive(conn.getSessionList().get(0).getPortOther());
 

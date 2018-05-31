@@ -1,5 +1,8 @@
 package cz.netcoop;
 
+import java.net.InetAddress;
+
 public interface IDevice {
-    public byte getAddress();
+    int getAddress();
+    InetAddress getNetAddress();
 }

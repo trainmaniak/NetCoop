@@ -1,3 +1,4 @@
+/*
 package cz.netcoop;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class Router {
     }
     */
 
+    /*
     public void bufferAdd(Message message) {
         messageBuffer.add(message);
     }
@@ -34,3 +36,4 @@ public class Router {
         return null;
     }
 }
+*/

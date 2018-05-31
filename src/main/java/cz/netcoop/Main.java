@@ -6,7 +6,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        AppNetCoop app = new AppNetCoop();
+        AppNetCoop app = AppNetCoop.getApp();
         app.start();
     }
 }

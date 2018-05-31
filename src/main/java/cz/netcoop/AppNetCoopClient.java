@@ -1,3 +1,4 @@
+/*
 package cz.netcoop;
 
 import cz.netcoop.Connectors.Connector;
@@ -37,3 +38,4 @@ public class AppNetCoopClient extends AppNetCoop {
         serveMe.run();
     }
 }
+*/

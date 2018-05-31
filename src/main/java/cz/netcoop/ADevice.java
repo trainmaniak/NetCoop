@@ -1,12 +1,20 @@
 package cz.netcoop;
 
+import java.net.InetAddress;
 import java.util.Objects;
 
 public abstract class ADevice implements IDevice {
-    public byte address;
+    private int address;
+    private InetAddress netAddress;
 
-    public byte getAddress() {
+    @Override
+    public final int getAddress() {
         return address;
+    }
+
+    @Override
+    public final InetAddress getNetAddress() {
+        return netAddress;
     }
 
     @Override

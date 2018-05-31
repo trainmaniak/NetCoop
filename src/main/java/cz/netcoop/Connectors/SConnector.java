@@ -1,3 +1,4 @@
+/*
 package cz.netcoop.Connectors;
 
 import cz.netcoop.Abilities.IAbility;
@@ -20,3 +21,4 @@ public class SConnector extends Connector {
         clientHandlerList.add(new ClientHandler(session));
     }
 }
+*/
