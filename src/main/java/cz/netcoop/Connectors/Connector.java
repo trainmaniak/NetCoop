@@ -1,17 +1,19 @@
-package cz.netcoop;
+package cz.netcoop.Connectors;
 
+import cz.netcoop.*;
 import cz.netcoop.Abilities.IAbility;
 import cz.netcoop.Exceptions.ConnectionException;
 
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 public class Connector {
     public static final int PORT_SERVE_ME = 6472;
     public static final int PORT_SERVE_OTHER = 6473;
+    public static final int PORT_EXPLORE = 6470;
 
     //private boolean connected = false;
 
@@ -156,5 +158,66 @@ public class Connector {
             //connected = false;
             throw e;
         }
+    }
+
+    public void inform() throws IOException {
+        DatagramSocket socket = new DatagramSocket(PORT_EXPLORE);
+        byte[] buf = new byte[256];
+
+        DatagramPacket packet = new DatagramPacket(buf, buf.length);
+        socket.receive(packet);
+
+        String received = new String(packet.getData(), 0, packet.getLength());
+        DebugPrinter.print("Wait on new device", "ok");
+
+        //Message message = Message.parseMessage(deviceList, abilityList, received);
+
+        InetAddress address = packet.getAddress();
+        int port = packet.getPort();
+        packet = new DatagramPacket(buf, buf.length, address, port);
+        socket.send(packet);
+
+        DebugPrinter.print("Inform new device", "ok");
+    }
+
+    public void ask() throws IOException {
+        DatagramSocket socket = new DatagramSocket();
+        byte[] buf = new byte[256];
+
+        DatagramPacket packet = new DatagramPacket(buf, buf.length, InetAddress.getByName("192.168.122.255"), PORT_EXPLORE);
+        socket.send(packet);
+
+        DebugPrinter.print("Ask existing device", "ok");
+
+        packet = new DatagramPacket(buf, buf.length);
+        socket.receive(packet);
+
+        String received = new String(packet.getData(), 0, packet.getLength());
+
+        DebugPrinter.print("Reply from other device", "ok");
+    }
+
+    public void sendUDP(String data) throws IOException {
+        DatagramSocket socket = new DatagramSocket();
+        byte[] buf = data.getBytes(); // new byte[256];
+
+        DatagramPacket packet = new DatagramPacket(buf, buf.length, InetAddress.getByName("192.168.122.255"), PORT_EXPLORE);
+        socket.send(packet);
+        DebugPrinter.print("data sended", "");
+        socket.close();
+    }
+
+    public String receiveUDP() throws IOException {
+        DatagramSocket socket = new DatagramSocket(PORT_EXPLORE);
+        byte[] buf = new byte[256];
+
+        DatagramPacket packet = new DatagramPacket(buf, buf.length);
+        DebugPrinter.print("waiting....", "");
+        socket.receive(packet);
+        socket.close();
+
+        String received = new String(packet.getData(), 0, packet.getLength());
+        DebugPrinter.print("waiting done", received);
+        return received;
     }
 }

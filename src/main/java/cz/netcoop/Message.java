@@ -17,29 +17,30 @@ public class Message {
                 + data;
     }
 
-    public Message parseMessage(List<IDevice> devices, List<IAbility> abilities, String message) {
+    public static Message parseMessage(List<IDevice> devices, List<IAbility> abilities, String message) {
+        Message newMessage = new Message();
 
         int destinationNumber = Integer.parseInt(message.substring(0, 3));
         int sourceNumber = Integer.parseInt(message.substring(4, 7));
         int abilityId = Integer.parseInt(message.substring(8, 11));
-        data = message.substring(12, message.length() - 1);
+        newMessage.data = message.substring(12, message.length() - 1);
 
         for (IDevice dev : devices) {
-            if (destination == null && dev.getAddress() == destinationNumber) {
-                destination = dev;
+            if (newMessage.destination == null && dev.getAddress() == destinationNumber) {
+                newMessage.destination = dev;
             }
 
-            if (source == null && dev.getAddress() == sourceNumber) {
-                source = dev;
+            if (newMessage.source == null && dev.getAddress() == sourceNumber) {
+                newMessage.source = dev;
             }
         }
 
         for (IAbility ab : abilities) {
             if (ab.getId() == abilityId) {
-                ability = ab;
+                newMessage.ability = ab;
             }
         }
 
-        return this;
+        return newMessage;
     }
 }

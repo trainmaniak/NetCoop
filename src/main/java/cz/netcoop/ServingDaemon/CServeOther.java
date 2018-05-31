@@ -1,6 +1,7 @@
 package cz.netcoop.ServingDaemon;
 
 import cz.netcoop.*;
+import cz.netcoop.Connectors.Connector;
 import cz.netcoop.Exceptions.ConnectionException;
 
 import java.io.IOException;

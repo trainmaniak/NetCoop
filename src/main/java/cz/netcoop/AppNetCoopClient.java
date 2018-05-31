@@ -1,8 +1,9 @@
 package cz.netcoop;
 
+import cz.netcoop.Connectors.Connector;
 import cz.netcoop.ServingDaemon.*;
 
-public class AppNetCoopClient extends AAppNetCoop {
+public class AppNetCoopClient extends AppNetCoop {
     private CServeOther serveOther;
     private CServeMe serveMe;
 
@@ -26,7 +27,7 @@ public class AppNetCoopClient extends AAppNetCoop {
 
         replier = new Replier();
 
-        connector.connect(serverIP);
+        getConnector().connect(serverIP);
     }
 
     public void start() {

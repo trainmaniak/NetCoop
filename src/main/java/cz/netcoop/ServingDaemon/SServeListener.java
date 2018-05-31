@@ -1,6 +1,5 @@
 package cz.netcoop.ServingDaemon;
 
-import cz.netcoop.AAppNetCoop;
 import cz.netcoop.AppNetCoopServer;
 
 public class SServeListener extends AServeDaemon {

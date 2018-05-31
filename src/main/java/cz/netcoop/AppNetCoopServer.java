@@ -2,7 +2,7 @@ package cz.netcoop;
 
 import cz.netcoop.ServingDaemon.*;
 
-public class AppNetCoopServer extends AAppNetCoop {
+public class AppNetCoopServer extends AppNetCoop {
     private SServeOther serveOther;
     private SServeListener serveListener;
 
@@ -21,7 +21,7 @@ public class AppNetCoopServer extends AAppNetCoop {
         serveOther = new SServeOther(this);
         serveListener = new SServeListener(this);
 
-        router = new Router(deviceList);
+        router = new Router();
 
         tServeOther = new Thread(serveOther);
     }

@@ -1,25 +1,25 @@
 package cz.netcoop.ServingDaemon;
 
-import cz.netcoop.AAppNetCoop;
-import cz.netcoop.Connector;
+import cz.netcoop.AppNetCoop;
+import cz.netcoop.Connectors.Connector;
 
 public abstract class AServeDaemon extends Thread implements IServeDaemon {
 
-    private AAppNetCoop appNetCoop;
+    private AppNetCoop appNetCoop;
 
-    protected AAppNetCoop getAppNetCoop() {
+    protected AppNetCoop getAppNetCoop() {
         return appNetCoop;
     }
 
-    private Connector connector;
+    private Connector Connector;
 
     protected Connector getConnector() {
-        return connector;
+        return Connector;
     }
 
-    protected AServeDaemon(AAppNetCoop appNetCoop) {
+    protected AServeDaemon(AppNetCoop appNetCoop) {
         this.appNetCoop = appNetCoop;
-        this.connector = appNetCoop.getConnector();
+        this.Connector = appNetCoop.getConnector();
     }
 
     /**
@@ -29,7 +29,7 @@ public abstract class AServeDaemon extends Thread implements IServeDaemon {
      */
     /*
     protected Message waitOnRequest() throws InterruptedException, IOException {
-        appNetCoop.connector.receive();
+        appNetCoop.Connector.receive();
         while (bufferedMessage == null) {
             wait();
         }
