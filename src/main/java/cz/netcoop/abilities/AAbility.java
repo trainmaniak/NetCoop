@@ -1,4 +1,4 @@
-package cz.netcoop.Abilities;
+package cz.netcoop.abilities;
 
 import java.util.Objects;
 

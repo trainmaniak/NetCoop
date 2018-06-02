@@ -1,4 +1,4 @@
-package cz.netcoop.ServingDaemon;
+package cz.netcoop.servingdaemon;
 
 public class SServeListener extends AServeDaemon {
 

@@ -1,7 +1,7 @@
 package cz.netcoop;
 
-import cz.netcoop.Connectors.Connector;
-import cz.netcoop.ServingDaemon.BeaconDaemon;
+import cz.netcoop.connectors.Connector;
+import cz.netcoop.servingdaemon.BeaconDaemon;
 
 public abstract class AAppNetCoopObject implements IAppNetCoopObject {
     @Override

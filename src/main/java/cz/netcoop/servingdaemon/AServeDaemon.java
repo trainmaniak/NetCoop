@@ -1,9 +1,6 @@
-package cz.netcoop.ServingDaemon;
+package cz.netcoop.servingdaemon;
 
 import cz.netcoop.AAppNetCoopObjectThread;
-import cz.netcoop.AppNetCoop;
-import cz.netcoop.Connectors.Connector;
-import cz.netcoop.IAppNetCoopObject;
 
 public abstract class AServeDaemon extends AAppNetCoopObjectThread implements IServeDaemon {
 

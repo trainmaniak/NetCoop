@@ -1,4 +1,4 @@
-package cz.netcoop.Abilities;
+package cz.netcoop.abilities;
 
 public interface IAbility {
     public byte getId();

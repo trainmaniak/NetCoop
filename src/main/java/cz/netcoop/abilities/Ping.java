@@ -1,4 +1,4 @@
-package cz.netcoop.Abilities;
+package cz.netcoop.abilities;
 
 public class Ping extends AAbility {
 

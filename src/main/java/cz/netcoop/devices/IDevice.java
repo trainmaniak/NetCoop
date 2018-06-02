@@ -1,4 +1,4 @@
-package cz.netcoop;
+package cz.netcoop.devices;
 
 import java.net.InetAddress;
 

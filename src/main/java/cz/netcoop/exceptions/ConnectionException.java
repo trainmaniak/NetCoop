@@ -1,4 +1,4 @@
-package cz.netcoop.Exceptions;
+package cz.netcoop.exceptions;
 
 public class ConnectionException extends Exception {
     public ConnectionException(String message) {

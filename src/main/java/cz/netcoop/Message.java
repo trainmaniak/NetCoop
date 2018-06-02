@@ -1,8 +1,7 @@
 package cz.netcoop;
 
-import cz.netcoop.Abilities.IAbility;
-
-import java.util.List;
+import cz.netcoop.abilities.IAbility;
+import cz.netcoop.devices.IDevice;
 
 public class Message {
     private IDevice destination = null;

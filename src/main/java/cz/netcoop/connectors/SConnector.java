@@ -3,7 +3,7 @@ package cz.netcoop.Connectors;
 
 import cz.netcoop.Abilities.IAbility;
 import cz.netcoop.ClientHandler;
-import cz.netcoop.IDevice;
+import cz.netcoop.devices.IDevice;
 import cz.netcoop.Session;
 
 import java.util.ArrayList;

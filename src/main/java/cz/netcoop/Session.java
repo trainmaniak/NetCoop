@@ -1,5 +1,7 @@
 package cz.netcoop;
 
+import cz.netcoop.devices.IDevice;
+
 import java.io.IOException;
 import java.net.Socket;
 

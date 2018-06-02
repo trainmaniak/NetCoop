@@ -1,8 +1,9 @@
 package cz.netcoop;
 
-import cz.netcoop.Abilities.IAbility;
-import cz.netcoop.Connectors.Connector;
-import cz.netcoop.ServingDaemon.BeaconDaemon;
+import cz.netcoop.abilities.IAbility;
+import cz.netcoop.connectors.Connector;
+import cz.netcoop.devices.IDevice;
+import cz.netcoop.servingdaemon.BeaconDaemon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,4 +46,7 @@ public class AppNetCoop implements IAppNetCoop {
         DebugPrinter.print("Threat test", "ok");
     }
 
+    public void addDevice() {
+        //deviceList.add()
+    }
 }

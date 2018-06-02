@@ -1,9 +1,7 @@
-package cz.netcoop.ServingDaemon;
+package cz.netcoop.servingdaemon;
 
-import cz.netcoop.AppNetCoop;
 import cz.netcoop.DebugPrinter;
 import cz.netcoop.MeetingMessage;
-import cz.netcoop.MeetingMessageType;
 
 import java.io.IOException;
 
@@ -13,24 +11,20 @@ public class BeaconDaemon extends AServeDaemon {
     public void run() {
         super.run();
 
-        publish(MeetingMessage.Builder.createQuery());
+        publish(new MeetingMessage(MeetingMessage.Type.QUERY));
 
         while (true) {
             try {
                 MeetingMessage message = getConnector().receiveUDP();
                 if (message == null) {
-                    DebugPrinter.print("receive done", "message for me");
                     continue;
-                } else if (message.getType() == MeetingMessageType.REPLY) { // ask/answer
-                    // add to list
-                } else if (message.getType() == MeetingMessageType.QUERY){
-                    MeetingMessage answer = MeetingMessage.Builder.createReply(
-                            getConnector().getMyAddress(),
-                            getConnector().getMyNetAddress());
+                } else if (message.getType() == MeetingMessage.Type.REPLY) { // ask/answer
+                    // TODO add to list
+                } else if (message.getType() == MeetingMessage.Type.QUERY){
+                    MeetingMessage answer = new MeetingMessage(MeetingMessage.Type.REPLY);
                     
                     publish(answer);
                 }
-
             } catch (IOException e) {
                 e.printStackTrace();
             }

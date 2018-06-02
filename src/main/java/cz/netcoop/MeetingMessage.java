@@ -2,66 +2,76 @@ package cz.netcoop;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Objects;
 
 public class MeetingMessage {
-    private MeetingMessageType type;
-    private int address;
-    private InetAddress netAddress;
+    private Type type;
+    private Address address;
 
-    public MeetingMessageType getType() {
+    public Type getType() {
         return type;
     }
 
-    public int getAddress() {
+    public Address getAddress() {
         return address;
     }
 
-    public InetAddress getNetAddress() {
-        return netAddress;
+    public enum Type {
+        QUERY,
+        REPLY
     }
 
-    private MeetingMessage(MeetingMessageType type, int address, InetAddress netAddress) {
+    public MeetingMessage(Type type) {
+        this.type = type;
+        this.address = AppNetCoop.getApp().getConnector().getMyAddress();
+    }
+
+    private MeetingMessage(Type type, Address address) {
         this.type = type;
         this.address = address;
-        this.netAddress = netAddress;
     }
 
-    public String assemble() {
-        if (type == MeetingMessageType.QUERY)
-            return String.valueOf(type.ordinal());
-        else
-            return String.valueOf(type.ordinal())
-            + String.valueOf(address)
-            + String.valueOf(netAddress);
+    @Override
+    public String toString() {
+        return "type=" + type.toString() +
+                ", ncAddr=" + address.getNcAddressString() +
+                ", ipAddr=" + address.getIpAddressString();
     }
 
     public static class Builder {
-        public static MeetingMessage parseMessage(String message) {
-            int typeNum = Integer.parseInt(message.substring(0, 1));
-            MeetingMessageType type = MeetingMessageType.values()[typeNum];
+        public static byte[] build(MeetingMessage message) {
+            byte[] result = new byte[6];
 
-            if (type == MeetingMessageType.QUERY) {
-                return new MeetingMessage(type, 0, null);
+            result[0] = (byte)message.type.ordinal();
+            result[1] = message.address.getNcAddress();
+
+            int i = 2;
+            for (byte octet : message.address.getIpAddressByte()) {
+                result[i++] = octet;
             }
 
-            int address = Integer.parseInt(message.substring(1, 5));
-            String netAddress = message.substring(5, message.length());
+            return result;
+        }
+
+        public static MeetingMessage parse(byte[] message) {
+            Type type = Type.values()[message[0]];
+
+            byte ncAddr = message[1];
+            byte[] ipAddr = new byte[4];
+
+            int i = 0;
+            for (int j = 2; j < message.length; j++) {
+                ipAddr[i++] = message[j];
+            }
 
             try {
-                return new MeetingMessage(type, address, InetAddress.getByName(netAddress));
+                return new MeetingMessage(type, new Address(ncAddr, InetAddress.getByAddress(ipAddr)));
             } catch (UnknownHostException e) {
                 DebugPrinter.print("parsing another ip address", "failed - bad format");
                 e.printStackTrace();
+
                 return null;
             }
-        }
-
-        public static MeetingMessage createQuery() {
-            return new MeetingMessage(MeetingMessageType.QUERY, 0, null);
-        }
-
-        public static MeetingMessage createReply(int address, InetAddress netAddress) {
-            return new MeetingMessage(MeetingMessageType.REPLY, address, netAddress);
         }
     }
 }
