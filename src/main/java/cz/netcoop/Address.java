@@ -33,4 +33,12 @@ public class Address {
         this.ncAddress = ncAddress;
         this.ipAddress = ipAddress;
     }
+
+    @Override
+    public String toString() {
+        return "Address{"
+                + "ncAddr=" + getNcAddressString()
+                + ", ipAddr=" + getIpAddressString()
+                + "}";
+    }
 }

@@ -1,20 +1,33 @@
 package cz.netcoop.devices;
 
+import cz.netcoop.Address;
+
 import java.net.InetAddress;
 import java.util.Objects;
 
 public abstract class ADevice implements IDevice {
-    private int address;
-    private InetAddress netAddress;
+    private Address address;
+    private String hostName;
 
     @Override
-    public final int getAddress() {
+    public final Address getAddress() {
         return address;
     }
 
     @Override
-    public final InetAddress getNetAddress() {
-        return netAddress;
+    public String getHostName() {
+        return hostName;
+    }
+
+    ADevice(Address address) {
+        this.address = address;
+    }
+
+    @Override
+    public String toString() {
+        return "ADevice:\n"
+                + "\t" + address.toString()
+                + "\t" + hostName;
     }
 
     @Override

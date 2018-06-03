@@ -1,7 +1,7 @@
 package cz.netcoop;
 
 import cz.netcoop.abilities.IAbility;
-import cz.netcoop.connectors.Connector;
+import cz.netcoop.devices.CommonDevice;
 import cz.netcoop.devices.IDevice;
 import cz.netcoop.servingdaemon.BeaconDaemon;
 
@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AppNetCoop implements IAppNetCoop {
-    private List<IDevice> deviceList = new ArrayList<>();
+    //private List<IDevice> deviceList = new ArrayList<>();
+    private List<ClientHandler> clientHandlerList = new ArrayList<>();
     private List<IAbility> abilityList = new ArrayList<>();
     private Connector connector = new Connector();
 
@@ -22,7 +23,13 @@ public class AppNetCoop implements IAppNetCoop {
     }
 
     public List<IDevice> getDeviceList() {
-        return deviceList;
+        List<IDevice> result = new ArrayList<>();
+
+        for (ClientHandler ch : clientHandlerList) {
+            result.add(ch.getDevice());
+        }
+
+        return result;
     }
 
     public List<IAbility> getAbilityList() {
@@ -46,7 +53,15 @@ public class AppNetCoop implements IAppNetCoop {
         DebugPrinter.print("Threat test", "ok");
     }
 
-    public void addDevice() {
-        //deviceList.add()
+    public void addDevice(IDevice device) {
+        ClientHandler ch = new ClientHandler(device);
+        clientHandlerList.add(ch);
+        ch.start();
+
+        StringBuilder print = new StringBuilder();
+        for (IDevice dev : getDeviceList()) {
+            print.append(dev.toString()).append("\n");
+        }
+        DebugPrinter.print("devices", print.toString());
     }
 }

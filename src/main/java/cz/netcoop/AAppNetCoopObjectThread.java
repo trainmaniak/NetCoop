@@ -1,6 +1,5 @@
 package cz.netcoop;
 
-import cz.netcoop.connectors.Connector;
 import cz.netcoop.servingdaemon.BeaconDaemon;
 
 public abstract class AAppNetCoopObjectThread extends Thread implements IAppNetCoopObject {

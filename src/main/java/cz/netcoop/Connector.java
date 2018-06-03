@@ -1,6 +1,5 @@
-package cz.netcoop.connectors;
+package cz.netcoop;
 
-import cz.netcoop.*;
 import cz.netcoop.devices.IDevice;
 import cz.netcoop.exceptions.ConnectionException;
 
@@ -198,49 +197,12 @@ public class Connector {
         }
     }
 
-    public void inform() throws IOException {
-        DatagramSocket socket = new DatagramSocket(PORT_EXPLORE);
-        byte[] buf = new byte[256];
-
-        DatagramPacket packet = new DatagramPacket(buf, buf.length);
-        socket.receive(packet);
-
-        String received = new String(packet.getData(), 0, packet.getLength());
-        DebugPrinter.print("Wait on new device", "ok");
-
-        //Message message = Message.parse(deviceList, abilityList, received);
-
-        InetAddress address = packet.getAddress();
-        int port = packet.getPort();
-        packet = new DatagramPacket(buf, buf.length, address, port);
-        socket.send(packet);
-
-        DebugPrinter.print("Inform new device", "ok");
-    }
-
-    public void ask() throws IOException {
-        DatagramSocket socket = new DatagramSocket();
-        byte[] buf = new byte[256];
-
-        DatagramPacket packet = new DatagramPacket(buf, buf.length, InetAddress.getByName("192.168.122.255"), PORT_EXPLORE);
-        socket.send(packet);
-
-        DebugPrinter.print("Ask existing device", "ok");
-
-        packet = new DatagramPacket(buf, buf.length);
-        socket.receive(packet);
-
-        String received = new String(packet.getData(), 0, packet.getLength());
-
-        DebugPrinter.print("Reply from other device", "ok");
-    }
-
     public void sendUDP(MeetingMessage message) throws IOException {
         if (socketUDPtx == null) {
             socketUDPtx = new DatagramSocket();
         }
 
-        byte[] buff = MeetingMessage.Builder.build(message);
+        byte[] buff = MeetingMessage.Parser.build(message);
 
         DatagramPacket packet = new DatagramPacket(buff, buff.length, InetAddress.getByName("192.168.122.255"), PORT_EXPLORE);
         socketUDPtx.send(packet);
@@ -259,10 +221,7 @@ public class Connector {
         DebugPrinter.print("receiving....", "");
         socketUDPrx.receive(packet);
 
-        //String messageStr = new String(packet.getData(), 0, packet.getLength());
-        //DebugPrinter.print("receive done", messageStr + " - sender: " + packet.getAddress().getHostName());
-
-        MeetingMessage message = MeetingMessage.Builder.parse(buff);
+        MeetingMessage message = MeetingMessage.Parser.parse(buff);
 
         if (message.getAddress().getNcAddress() == myAddress.getNcAddress()) {
             DebugPrinter.print("receive done", message.toString() + " - ignore");

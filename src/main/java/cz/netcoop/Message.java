@@ -4,9 +4,9 @@ import cz.netcoop.abilities.IAbility;
 import cz.netcoop.devices.IDevice;
 
 public class Message {
-    private IDevice destination = null;
-    private IDevice source = null;
-    private IAbility ability = null;
+    private IDevice destination;
+    private IDevice source;
+    private IAbility ability;
     private String data;
 
     public Message(IDevice destination, IDevice source, IAbility ability, String data) {
@@ -34,11 +34,11 @@ public class Message {
         IDevice destination = null;
         IDevice source = null;
         for (IDevice dev : app.getDeviceList()) {
-            if (destination == null && dev.getAddress() == destinationNumber) {
+            if (destination == null/* && dev.getAddress() == destinationNumber*/) {
                 destination = dev;
             }
 
-            if (source == null && dev.getAddress() == sourceNumber) {
+            if (source == null/* && dev.getAddress() == sourceNumber*/) {
                 source = dev;
             }
         }
@@ -53,4 +53,15 @@ public class Message {
 
         return new Message(destination, source, ability, data);
     }
+
+    /*
+    public static class Builder {
+        public static byte[] build(Message message) {
+            // TODO
+        }
+
+        public static Message parse(byte[] message) {
+
+        }
+    }*/
 }

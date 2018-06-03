@@ -1,7 +1,9 @@
 package cz.netcoop.servingdaemon;
 
+import cz.netcoop.Address;
 import cz.netcoop.DebugPrinter;
 import cz.netcoop.MeetingMessage;
+import cz.netcoop.devices.CommonDevice;
 
 import java.io.IOException;
 
@@ -18,12 +20,13 @@ public class BeaconDaemon extends AServeDaemon {
                 MeetingMessage message = getConnector().receiveUDP();
                 if (message == null) {
                     continue;
-                } else if (message.getType() == MeetingMessage.Type.REPLY) { // ask/answer
-                    // TODO add to list
-                } else if (message.getType() == MeetingMessage.Type.QUERY){
-                    MeetingMessage answer = new MeetingMessage(MeetingMessage.Type.REPLY);
-                    
-                    publish(answer);
+                } else {
+                    createConnection(message.getAddress());
+
+                    if (message.getType() == MeetingMessage.Type.QUERY){
+                        MeetingMessage answer = new MeetingMessage(MeetingMessage.Type.REPLY);
+                        publish(answer);
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -32,7 +35,7 @@ public class BeaconDaemon extends AServeDaemon {
     }
 
     public void publish(MeetingMessage message) {
-        Thread t = new Thread(() -> {
+        Thread t = new Thread(() -> { // TODO proc nove vlakno??
             try {
                 getConnector().sendUDP(message);
             } catch (IOException e) {
@@ -42,5 +45,18 @@ public class BeaconDaemon extends AServeDaemon {
         });
 
         t.start();
+    }
+
+    public void createConnection(Address address) {
+
+        // TODO vlakno nefunguje ??? nevytvori se nove
+
+        // TODO vlakno protoze add dev je narocnejsi a zpomalovalo by to run (receive)
+        Thread t = new Thread(() -> {
+            getApp().addDevice(new CommonDevice(address));
+        });
+        t.start();
+
+        DebugPrinter.print("Thread test", "creatingConnection done");
     }
 }

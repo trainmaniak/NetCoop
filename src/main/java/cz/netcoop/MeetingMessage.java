@@ -5,6 +5,11 @@ import java.net.UnknownHostException;
 import java.util.Objects;
 
 public class MeetingMessage {
+    public enum Type {
+        QUERY,
+        REPLY
+    }
+
     private Type type;
     private Address address;
 
@@ -14,11 +19,6 @@ public class MeetingMessage {
 
     public Address getAddress() {
         return address;
-    }
-
-    public enum Type {
-        QUERY,
-        REPLY
     }
 
     public MeetingMessage(Type type) {
@@ -38,7 +38,7 @@ public class MeetingMessage {
                 ", ipAddr=" + address.getIpAddressString();
     }
 
-    public static class Builder {
+    public static class Parser {
         public static byte[] build(MeetingMessage message) {
             byte[] result = new byte[6];
 

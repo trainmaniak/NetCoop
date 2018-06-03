@@ -1,4 +1,9 @@
 package cz.netcoop.devices;
 
-public class CommonDevice {
+import cz.netcoop.Address;
+
+public class CommonDevice extends ADevice {
+    public CommonDevice(Address address) {
+        super(address);
+    }
 }
