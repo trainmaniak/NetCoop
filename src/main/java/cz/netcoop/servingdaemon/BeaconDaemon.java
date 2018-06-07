@@ -2,7 +2,7 @@ package cz.netcoop.servingdaemon;
 
 import cz.netcoop.Address;
 import cz.netcoop.DebugPrinter;
-import cz.netcoop.MeetingMessage;
+import cz.netcoop.Message;
 import cz.netcoop.devices.CommonDevice;
 
 import java.io.IOException;
@@ -14,29 +14,21 @@ public class BeaconDaemon extends AServeDaemon {
         super.run();
 
         // init broadcast
-        publish(new MeetingMessage(MeetingMessage.Type.QUERY));
+        publish(new Message(Message.Type.REQUEST));
 
         while (true) {
             try {
-                MeetingMessage message = getConnector().receiveUDP();
+                Message message = getConnector().receiveUDP();
 
                 if (message != null) {
                     switch (message.getType()) {
-                        case QUERY:
+                        case REQUEST:
                             addDevice(message.getAddress());
 
-                            publish(new MeetingMessage(MeetingMessage.Type.REPLY));
+                            publish(new Message(Message.Type.REPLY));
                             break;
                         case REPLY:
                             addDevice(message.getAddress());
-                            break;
-                        case TCPCONNREQUEST:
-                            runListener();
-
-                            publish(new MeetingMessage(MeetingMessage.Type.TCPCONNCONFIRM));
-                            break;
-                        case TCPCONNCONFIRM:
-
                             break;
                     }
                 }
@@ -48,7 +40,7 @@ public class BeaconDaemon extends AServeDaemon {
 
     // TODO udelat observer
 
-    public void publish(MeetingMessage message) {
+    public void publish(Message message) {
         Thread t = new Thread(() -> { // TODO proc nove vlakno??
             try {
                 getConnector().sendUDP(message);

@@ -8,15 +8,10 @@ import java.util.List;
 
 public class ClientHandler extends AAppNetCoopObjectThread {
     private IDevice device;
-    private Session session;
     private List<ActionHandler> actionBuff = new ArrayList<>();
 
     public IDevice getDevice() {
         return device;
-    }
-
-    public Session getSession() {
-        return session;
     }
 
     public ClientHandler(IDevice device) {
@@ -33,12 +28,12 @@ public class ClientHandler extends AAppNetCoopObjectThread {
         DebugPrinter.print("test of creating new connection", device.toString());
     }
 
-    public void sendQuery(Message message) {
+    public void sendQuery(MessageOld messageOld) {
         Thread t = new Thread(() -> { // TODO proc nove vlakno ??
             try {
-                actionBuff.add(new ActionHandler(message.getAbility()));
+                actionBuff.add(new ActionHandler(messageOld.getAbility()));
 
-                getConnector().send(session.getPortMe(), message);
+                getConnector().send(session.getPortMe(), messageOld);
             } catch (IOException e) {
                 DebugPrinter.print("send TCP", "failed");
                 e.printStackTrace();

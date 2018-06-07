@@ -14,21 +14,21 @@ public class Router {
     }*/
 
     /*
-    public IDevice getDestinationDevice(Message message) {
-        return message.destination;
+    public IDevice getDestinationDevice(Message messageOld) {
+        return messageOld.destination;
     }
     */
 
     /*
-    public void bufferAdd(Message message) {
-        messageBuffer.add(message);
+    public void bufferAdd(Message messageOld) {
+        messageBuffer.add(messageOld);
     }
 
     public Message bufferGet(Session caller) {
-        for (Message message : messageBuffer) {
-            if (message.destination == caller.getDevice()) {
-                messageBuffer.remove(message);
-                return message;
+        for (Message messageOld : messageBuffer) {
+            if (messageOld.destination == caller.getDevice()) {
+                messageBuffer.remove(messageOld);
+                return messageOld;
             }
         }
 

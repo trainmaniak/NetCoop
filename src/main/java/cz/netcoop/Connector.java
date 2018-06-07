@@ -1,8 +1,5 @@
 package cz.netcoop;
 
-import cz.netcoop.devices.IDevice;
-import cz.netcoop.exceptions.ConnectionException;
-
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
@@ -150,7 +147,7 @@ public class Connector {
      * @throws IOException receive failed
      */
     /*
-    public Message receive(Port port) throws IOException, ConnectionException {
+    public MessageOld receive(Port port) throws IOException, ConnectionException {
 
         // TODO reconnect
 
@@ -166,7 +163,7 @@ public class Connector {
             }
 
             String rawMessage = port.getReader().readLine();
-            Message message = Message.parseMessage(rawMessage);
+            MessageOld message = MessageOld.parseMessage(rawMessage);
 
             DebugPrinter.print("Received msg", rawMessage);
             return message;
@@ -186,7 +183,7 @@ public class Connector {
      * @throws IOException send failed
      */
     /*
-    public void send(Port port, Message message) throws IOException, ConnectionException {
+    public void send(Port port, MessageOld message) throws IOException, ConnectionException {
 
         // TODO reconnect
 
@@ -210,12 +207,12 @@ public class Connector {
     }
     */
 
-    public void sendUDP(MeetingMessage message) throws IOException {
+    public void sendUDP(Message message) throws IOException {
         if (socketUDPtx == null) {
             socketUDPtx = new DatagramSocket();
         }
 
-        byte[] buff = MeetingMessage.Parser.build(message);
+        byte[] buff = Message.Parser.build(message);
 
         DatagramPacket packet = new DatagramPacket(buff, buff.length, InetAddress.getByName("192.168.122.255"), PORT_EXPLORE);
         socketUDPtx.send(packet);
@@ -223,7 +220,7 @@ public class Connector {
         DebugPrinter.print("send done", message.toString());
     }
 
-    public MeetingMessage receiveUDP() throws IOException {
+    public Message receiveUDP() throws IOException {
         if (socketUDPrx == null) {
             socketUDPrx = new DatagramSocket(PORT_EXPLORE);
         }
@@ -234,7 +231,7 @@ public class Connector {
         DebugPrinter.print("receiving....", "");
         socketUDPrx.receive(packet);
 
-        MeetingMessage message = MeetingMessage.Parser.parse(buff);
+        Message message = Message.Parser.parse(buff);
 
         if (message.getAddress().getNcAddress() == myAddress.getNcAddress()) {
             DebugPrinter.print("receive done", message.toString() + " - ignore");

@@ -19,8 +19,8 @@ public class CServeOther extends AServeDaemon {
             try {
                 Connector conn = getApp().getConnector();
 
-                Message request = conn.receive(conn.getSessionList().get(0).getPortOther());
-                Message answer = null; //getApp().getReplier().getAnswer(request);
+                MessageOld request = conn.receive(conn.getSessionList().get(0).getPortOther());
+                MessageOld answer = null; //getApp().getReplier().getAnswer(request);
 
                 conn.send(conn.getSessionList().get(0).getPortOther(), answer);
             } catch (IOException | ConnectionException e) {

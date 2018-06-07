@@ -166,10 +166,10 @@ public class Connector {
             }
 
             String rawMessage = port.getReader().readLine();
-            Message message = Message.parseMessage(rawMessage);
+            Message messageOld = Message.parseMessage(rawMessage);
 
             DebugPrinter.print("Received msg", rawMessage);
-            return message;
+            return messageOld;
         } catch (IOException e) {
             //connected = false;
             throw e;
@@ -186,7 +186,7 @@ public class Connector {
      * @throws IOException send failed
      */
     /*
-    public void send(Port port, Message message) throws IOException, ConnectionException {
+    public void send(Port port, Message messageOld) throws IOException, ConnectionException {
 
         // TODO reconnect
 
@@ -197,7 +197,7 @@ public class Connector {
         //
 
         try {
-            String rawMessage = message.assemble();
+            String rawMessage = messageOld.assemble();
 
             port.getWriter().write(rawMessage);
             port.getWriter().flush();
@@ -210,17 +210,17 @@ public class Connector {
     }
     */
 
-    public void sendUDP(MeetingMessage message) throws IOException {
+    public void sendUDP(MeetingMessage messageOld) throws IOException {
         if (socketUDPtx == null) {
             socketUDPtx = new DatagramSocket();
         }
 
-        byte[] buff = MeetingMessage.Parser.build(message);
+        byte[] buff = MeetingMessage.Parser.build(messageOld);
 
         DatagramPacket packet = new DatagramPacket(buff, buff.length, InetAddress.getByName("192.168.122.255"), PORT_EXPLORE);
         socketUDPtx.send(packet);
 
-        DebugPrinter.print("send done", message.toString());
+        DebugPrinter.print("send done", messageOld.toString());
     }
 
     public MeetingMessage receiveUDP() throws IOException {
@@ -234,15 +234,15 @@ public class Connector {
         DebugPrinter.print("receiving....", "");
         socketUDPrx.receive(packet);
 
-        MeetingMessage message = MeetingMessage.Parser.parse(buff);
+        MeetingMessage messageOld = MeetingMessage.Parser.parse(buff);
 
-        if (message.getAddress().getNcAddress() == myAddress.getNcAddress()) {
-            DebugPrinter.print("receive done", message.toString() + " - ignore");
+        if (messageOld.getAddress().getNcAddress() == myAddress.getNcAddress()) {
+            DebugPrinter.print("receive done", messageOld.toString() + " - ignore");
             return null;
         }
 
-        DebugPrinter.print("receive done", message.toString());
-        return message;
+        DebugPrinter.print("receive done", messageOld.toString());
+        return messageOld;
     }
 
     public void closeUDP(DatagramSocket socket) {

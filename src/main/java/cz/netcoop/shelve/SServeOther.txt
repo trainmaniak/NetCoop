@@ -18,10 +18,10 @@ public class SServeOther extends AServeDaemon {
             try {
                 Connector conn = getConnector();
 
-                Message message = conn.receive(conn.getSessionList().get(0).getPortOther());
+                MessageOld messageOld = conn.receive(conn.getSessionList().get(0).getPortOther());
 
-                //IDevice destination = ((AppNetCoopServer)getAppNetCoop()).getRouter().getDestinationDevice(message);
-                //conn.send(conn.getSession(destination).getPortOther(), message);
+                //IDevice destination = ((AppNetCoopServer)getAppNetCoop()).getRouter().getDestinationDevice(messageOld);
+                //conn.send(conn.getSession(destination).getPortOther(), messageOld);
             } catch (IOException | ConnectionException e) {
                 e.printStackTrace();
             }
