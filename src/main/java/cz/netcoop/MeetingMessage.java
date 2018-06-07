@@ -7,7 +7,9 @@ import java.util.Objects;
 public class MeetingMessage {
     public enum Type {
         QUERY,
-        REPLY
+        REPLY,
+        TCPCONNREQUEST,
+        TCPCONNCONFIRM
     }
 
     private Type type;

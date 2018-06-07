@@ -3,12 +3,12 @@ package cz.netcoop.abilities;
 import java.util.Objects;
 
 public abstract class AAbility implements IAbility {
+    private byte id;
 
     @Override
     public final byte getId() {
         return id;
     }
-    private byte id;
 
     @Override
     public boolean equals(Object o) {

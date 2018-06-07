@@ -1,4 +1,3 @@
-/*
 package cz.netcoop;
 
 import java.util.ArrayList;
@@ -36,4 +35,3 @@ public class Router {
         return null;
     }
 }
-*/

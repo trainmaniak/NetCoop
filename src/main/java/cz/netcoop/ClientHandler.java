@@ -1,12 +1,15 @@
 package cz.netcoop;
 
-import cz.netcoop.Session;
 import cz.netcoop.devices.IDevice;
-import cz.netcoop.servingdaemon.AServeDaemon;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClientHandler extends AAppNetCoopObjectThread {
     private IDevice device;
     private Session session;
+    private List<ActionHandler> actionBuff = new ArrayList<>();
 
     public IDevice getDevice() {
         return device;
@@ -25,8 +28,23 @@ public class ClientHandler extends AAppNetCoopObjectThread {
 
         // TODO create conn
 
-        // TODO prijmout message a pres router odeslat
+        // TODO prijmout message, provest a odeslat odpoved
 
         DebugPrinter.print("test of creating new connection", device.toString());
+    }
+
+    public void sendQuery(Message message) {
+        Thread t = new Thread(() -> { // TODO proc nove vlakno ??
+            try {
+                actionBuff.add(new ActionHandler(message.getAbility()));
+
+                getConnector().send(session.getPortMe(), message);
+            } catch (IOException e) {
+                DebugPrinter.print("send TCP", "failed");
+                e.printStackTrace();
+            }
+        });
+
+        t.start();
     }
 }

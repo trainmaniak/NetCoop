@@ -1,10 +1,9 @@
 package cz.netcoop.abilities;
 
 public interface IAbility {
-    public byte getId();
+    byte getId();
 
-    public String make(String input);
+    byte[] request();
+    byte[] make(byte[] input);
 
-    public String request(String intput);
-    public String request();
 }

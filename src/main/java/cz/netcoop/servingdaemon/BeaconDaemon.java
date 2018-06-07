@@ -13,19 +13,31 @@ public class BeaconDaemon extends AServeDaemon {
     public void run() {
         super.run();
 
+        // init broadcast
         publish(new MeetingMessage(MeetingMessage.Type.QUERY));
 
         while (true) {
             try {
                 MeetingMessage message = getConnector().receiveUDP();
-                if (message == null) {
-                    continue;
-                } else {
-                    createConnection(message.getAddress());
 
-                    if (message.getType() == MeetingMessage.Type.QUERY){
-                        MeetingMessage answer = new MeetingMessage(MeetingMessage.Type.REPLY);
-                        publish(answer);
+                if (message != null) {
+                    switch (message.getType()) {
+                        case QUERY:
+                            addDevice(message.getAddress());
+
+                            publish(new MeetingMessage(MeetingMessage.Type.REPLY));
+                            break;
+                        case REPLY:
+                            addDevice(message.getAddress());
+                            break;
+                        case TCPCONNREQUEST:
+                            runListener();
+
+                            publish(new MeetingMessage(MeetingMessage.Type.TCPCONNCONFIRM));
+                            break;
+                        case TCPCONNCONFIRM:
+
+                            break;
                     }
                 }
             } catch (IOException e) {
@@ -33,6 +45,8 @@ public class BeaconDaemon extends AServeDaemon {
             }
         }
     }
+
+    // TODO udelat observer
 
     public void publish(MeetingMessage message) {
         Thread t = new Thread(() -> { // TODO proc nove vlakno??
@@ -47,16 +61,23 @@ public class BeaconDaemon extends AServeDaemon {
         t.start();
     }
 
-    public void createConnection(Address address) {
-
-        // TODO vlakno nefunguje ??? nevytvori se nove
+    private void addDevice(Address address) {
 
         // TODO vlakno protoze add dev je narocnejsi a zpomalovalo by to run (receive)
         Thread t = new Thread(() -> {
             getApp().addDevice(new CommonDevice(address));
         });
+
         t.start();
 
         DebugPrinter.print("Thread test", "creatingConnection done");
+    }
+
+    private void runListener() {
+        Thread t = new Thread(() -> {
+            getConnector().listen();
+        });
+
+        t.start();
     }
 }
