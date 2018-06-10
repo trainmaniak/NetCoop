@@ -18,6 +18,14 @@ public class ClientHandler extends AAppNetCoopObjectThread {
         this.device = device;
     }
 
+    public ActionHandler getLastAction() {
+        return actionBuff.get(0);
+    }
+
+    public void addAction() {
+
+    }
+
     @Override
     public void run() {
 
@@ -26,20 +34,5 @@ public class ClientHandler extends AAppNetCoopObjectThread {
         // TODO prijmout message, provest a odeslat odpoved
 
         DebugPrinter.print("test of creating new connection", device.toString());
-    }
-
-    public void sendQuery(MessageOld messageOld) {
-        Thread t = new Thread(() -> { // TODO proc nove vlakno ??
-            try {
-                actionBuff.add(new ActionHandler(messageOld.getAbility()));
-
-                getConnector().send(session.getPortMe(), messageOld);
-            } catch (IOException e) {
-                DebugPrinter.print("send TCP", "failed");
-                e.printStackTrace();
-            }
-        });
-
-        t.start();
     }
 }

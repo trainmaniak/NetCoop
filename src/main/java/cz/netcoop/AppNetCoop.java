@@ -1,19 +1,18 @@
 package cz.netcoop;
 
 import cz.netcoop.abilities.IAbility;
-import cz.netcoop.devices.CommonDevice;
 import cz.netcoop.devices.IDevice;
 import cz.netcoop.servingdaemon.BeaconDaemon;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 
 public class AppNetCoop implements IAppNetCoop {
-    //private List<IDevice> deviceList = new ArrayList<>();
     private List<ClientHandler> clientHandlerList = new ArrayList<>(); // TODO iterable
     private List<IAbility> abilityList = new ArrayList<>();
     private Connector connector = new Connector();
+
+    // TODO device ma jiny charakter jak ability, ability jsou staticke, dev jsou ex instance, blbost
 
     private BeaconDaemon beaconDaemon = new BeaconDaemon();
 
@@ -21,6 +20,33 @@ public class AppNetCoop implements IAppNetCoop {
 
     public static AppNetCoop getApp() {
         return app;
+    }
+
+    public List<ClientHandler> getClientHandlerList() {
+        return clientHandlerList;
+    }
+
+    public ClientHandler getClientHandler(byte ncAddress) {
+        for (ClientHandler ch : clientHandlerList) {
+            if (ch.getDevice().getAddress().getNcAddress() == ncAddress) {
+                return ch;
+            }
+        }
+
+        return null;
+    }
+
+    public ClientHandler addClientHandler(IDevice device) {
+        ClientHandler newCH = new ClientHandler(device);
+        clientHandlerList.add(newCH);
+
+        return newCH;
+    }
+
+    // TODO iterable !!!
+
+    public ActionHandler getActionHandler(byte ncAddress) {
+        return getClientHandler(ncAddress).getLastAction();
     }
 
     public List<IDevice> getDeviceList() {
@@ -45,6 +71,16 @@ public class AppNetCoop implements IAppNetCoop {
 
     public List<IAbility> getAbilityList() {
         return abilityList;
+    }
+
+    public IAbility getAbility(byte abilityID) {
+        for (IAbility ability : abilityList) {
+            if (ability.getId() == abilityID) {
+                return ability;
+            }
+        }
+
+        return null; // TODO neresim null, muze to byt problem
     }
 
     public Connector getConnector() {

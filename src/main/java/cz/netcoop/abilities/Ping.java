@@ -4,7 +4,7 @@ public class Ping extends AAbility {
     private byte id = 0x1;
 
     @Override
-    public byte[] generate() {
+    public byte[] request() {
         return new byte[]{0x0};
     }
 
@@ -14,16 +14,6 @@ public class Ping extends AAbility {
             return new byte[]{0x1};
         }
 
-        return null;
-    }
-
-    @Override
-    public String request(String intput) {
-        return null;
-    }
-
-    @Override
-    public String request() {
         return null;
     }
 }

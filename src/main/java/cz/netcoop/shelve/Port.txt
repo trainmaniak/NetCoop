@@ -23,7 +23,7 @@ public class Port {
 
     /**
      * Create new connection with BufferedReader and BufferedWriter
-     * @param ipAddress IP address to create connection
+     * @param ipAddress IP destination to create connection
      * @param portNum port number for connection
      * @throws IOException connection failed
      */

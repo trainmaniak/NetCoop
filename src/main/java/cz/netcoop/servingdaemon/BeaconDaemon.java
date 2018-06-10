@@ -3,6 +3,7 @@ package cz.netcoop.servingdaemon;
 import cz.netcoop.Address;
 import cz.netcoop.DebugPrinter;
 import cz.netcoop.Message;
+import cz.netcoop.abilities.StartDating;
 import cz.netcoop.devices.CommonDevice;
 
 import java.io.IOException;
@@ -14,21 +15,21 @@ public class BeaconDaemon extends AServeDaemon {
         super.run();
 
         // init broadcast
-        publish(new Message(Message.Type.REQUEST));
+        publish(new Message(Message.Type.REQUEST, new StartDating()));
 
         while (true) {
             try {
-                Message message = getConnector().receiveUDP();
+                Message message = getConnector().receive();
 
                 if (message != null) {
                     switch (message.getType()) {
                         case REQUEST:
-                            addDevice(message.getAddress());
+                            addDevice(message.getDestination());
 
-                            publish(new Message(Message.Type.REPLY));
+                            publish(new Message(Message.Type.REPLY, new StartDating()));
                             break;
                         case REPLY:
-                            addDevice(message.getAddress());
+                            addDevice(message.getDestination());
                             break;
                     }
                 }
@@ -43,7 +44,7 @@ public class BeaconDaemon extends AServeDaemon {
     public void publish(Message message) {
         Thread t = new Thread(() -> { // TODO proc nove vlakno??
             try {
-                getConnector().sendUDP(message);
+                getConnector().send(message);
             } catch (IOException e) {
                 DebugPrinter.print("send UDP", "failed");
                 e.printStackTrace();
@@ -63,13 +64,5 @@ public class BeaconDaemon extends AServeDaemon {
         t.start();
 
         DebugPrinter.print("Thread test", "creatingConnection done");
-    }
-
-    private void runListener() {
-        Thread t = new Thread(() -> {
-            getConnector().listen();
-        });
-
-        t.start();
     }
 }

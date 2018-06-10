@@ -11,56 +11,77 @@ public class Message {
         REPLY
     }
 
+    private Address destination;
+    private Address source;
     private Type type;
     private IAbility ability;
-    private Address address;
+    private byte[] data;
+
+    public Address getDestination() {
+        return destination;
+    }
+
+    public Address getSource() {
+        return source;
+    }
 
     public Type getType() {
         return type;
     }
 
-    public Address getAddress() {
-        return address;
+    public IAbility getAbility() {
+        return ability;
     }
 
-    public Message(Type type) {
-        this.type = type;
-        // TODO ability
-        this.address = AppNetCoop.getApp().getConnector().getMyAddress();
-    }
-
-    public Message(Type type, IAbility ability, Address address) {
+    public Message(Address source, Type type, IAbility ability) {
+        this.destination = AppNetCoop.getApp().getConnector().getBroadcastAddress();
+        this.source = source;
         this.type = type;
         this.ability = ability;
-        this.address = address;
+    }
+
+    public Message(Address destination, Address source, Type type, IAbility ability) {
+        this.destination = destination;
+        this.source = source;
+        this.type = type;
+        this.ability = ability;
     }
 
     @Override
     public String toString() {
         return "type=" + type.toString() +
-                ", ncAddr=" + address.getNcAddressString() +
-                ", ipAddr=" + address.getIpAddressString();
+                ", ncAddr=" + destination.getNcAddressString() +
+                ", ipAddr=" + destination.getIpAddressString();
     }
 
     public static class Parser {
         public static byte[] build(Message message) {
-            byte[] result = new byte[6];
+            byte[] result = new byte[256];
 
-            result[0] = (byte)message.type.ordinal();
-            result[1] = message.address.getNcAddress();
+            result[0] = message.destination.getNcAddress();
+            result[1] = message.source.getNcAddress();
+            result[2] = (byte)message.type.ordinal();
+            result[3] = message.ability.getId();
 
-            int i = 2;
-            for (byte octet : message.address.getIpAddressByte()) {
-                result[i++] = octet;
-            }
-
-            // TODO message.ability.request();
+            byte[] request = message.ability.request();
+            System.arraycopy(request, 0, result, 4, request.length);
 
             return result;
         }
 
         public static Message parse(byte[] message) {
-            Type type = Type.values()[message[0]];
+            AppNetCoop app = AppNetCoop.getApp();
+
+            Address destination = app.getDevice(message[0]).getAddress();
+            Address source = app.getDevice(message[1]).getAddress();
+            Type type = Type.values()[message[2]];
+            IAbility ability = app.getAbility(message[3]);
+
+            byte[] data = new byte[message.length - 4];
+            System.arraycopy(data, 0, message, 4, message.length);
+
+            Message newMessage = new Message()
+
 
             byte ncAddr = message[1];
             byte[] ipAddr = new byte[4];
@@ -71,9 +92,9 @@ public class Message {
             }
 
             try {
-                return new Message(type, new Address(ncAddr, InetAddress.getByAddress(ipAddr)));
+                return new Message(type, null, new Address(ncAddr, InetAddress.getByAddress(ipAddr)));
             } catch (UnknownHostException e) {
-                DebugPrinter.print("parsing another ip address", "failed - bad format");
+                DebugPrinter.print("parsing another ip destination", "failed - bad format");
                 e.printStackTrace();
 
                 return null;
