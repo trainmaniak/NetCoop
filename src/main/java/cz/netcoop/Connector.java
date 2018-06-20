@@ -1,10 +1,12 @@
 package cz.netcoop;
 
+import cz.netcoop.abilities.IAbility;
+
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
 
-public class Connector {
+public class Connector extends AAppNetCoopObjectThread {
     public static final int PORT_EXPLORE = 6470;
 
     private DatagramSocket socketTX;
@@ -13,6 +15,8 @@ public class Connector {
     private List<InetAddress> myNetAddresses = new ArrayList<InetAddress>();
     private Address myAddress;
     private Address broadcastAddress;
+
+    private Message messageBuffer;
 
     public Address getMyAddress() {
         return myAddress;
@@ -72,6 +76,35 @@ public class Connector {
 
             DebugPrinter.print("my addr nc str", myAddress.getNcAddressString());
             DebugPrinter.print("my addr ip str", myAddress.getIpAddressString());
+        }
+    }
+
+    public Message pullMessageBuffer() {
+        Message temp = messageBuffer;
+        messageBuffer = null;
+
+        return temp;
+    }
+
+    @Override
+    public void run() {
+        super.run();
+
+        // initial broadcast
+        try {
+            IAbility ability = getApp().getAbility((byte)0x0);
+            send(new Message(getMyAddress(), Message.Type.REQUEST, ability.getId(), ability.generateRequest()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        while (true) {
+            try {
+                messageBuffer = receive();
+                getConnectorsSecretary().start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

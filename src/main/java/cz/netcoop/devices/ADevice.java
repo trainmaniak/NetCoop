@@ -2,7 +2,6 @@ package cz.netcoop.devices;
 
 import cz.netcoop.Address;
 
-import java.net.InetAddress;
 import java.util.Objects;
 
 public abstract class ADevice implements IDevice {

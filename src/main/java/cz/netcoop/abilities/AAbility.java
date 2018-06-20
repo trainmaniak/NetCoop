@@ -1,8 +1,10 @@
 package cz.netcoop.abilities;
 
+import cz.netcoop.AAppNetCoopObject;
+
 import java.util.Objects;
 
-public abstract class AAbility implements IAbility {
+public abstract class AAbility extends AAppNetCoopObject implements IAbility {
     private byte id;
 
     @Override

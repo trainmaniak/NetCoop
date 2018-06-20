@@ -1,10 +1,12 @@
 package cz.netcoop;
 
-import cz.netcoop.servingdaemon.BeaconDaemon;
+import cz.netcoop.AppNetCoop;
+import cz.netcoop.Connector;
 
 public interface IAppNetCoopObject {
     AppNetCoop getApp();
 
     Connector getConnector();
-    BeaconDaemon getBeaconDaemon();
+
+    ConnectorsSecretary getConnectorsSecretary();
 }

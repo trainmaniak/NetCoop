@@ -4,7 +4,7 @@ import java.net.InetAddress;
 
 public class Address {
     private byte ncAddress;
-    private InetAddress ipAddress;
+    private InetAddress ipAddress = null;
 
     public byte getNcAddress() {
         return ncAddress;
@@ -27,6 +27,26 @@ public class Address {
 
     public String getIpAddressString() {
         return ipAddress.getHostAddress();
+    }
+
+    public boolean isComplete() {
+        if (ipAddress == null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public void addIpAddress(InetAddress ipAddress) {
+        if (isComplete()) {
+            return;
+        }
+
+        this.ipAddress = ipAddress;
+    }
+
+    public Address(byte ncAddress) {
+        this.ncAddress = ncAddress;
     }
 
     public Address(byte ncAddress, InetAddress ipAddress) {

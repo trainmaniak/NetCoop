@@ -1,6 +1,8 @@
 package cz.netcoop;
 
-import cz.netcoop.servingdaemon.BeaconDaemon;
+import cz.netcoop.AppNetCoop;
+import cz.netcoop.Connector;
+import cz.netcoop.IAppNetCoopObject;
 
 public abstract class AAppNetCoopObjectThread extends Thread implements IAppNetCoopObject {
     @Override
@@ -14,7 +16,7 @@ public abstract class AAppNetCoopObjectThread extends Thread implements IAppNetC
     }
 
     @Override
-    public final BeaconDaemon getBeaconDaemon() {
-        return getApp().getBeaconDaemon();
+    public ConnectorsSecretary getConnectorsSecretary() {
+        return getApp().getConnectorsSecretary();
     }
 }
