@@ -1,7 +1,8 @@
 package cz.netcoop;
 
 import cz.netcoop.abilities.IAbility;
-import cz.netcoop.abilities.StartDating;
+
+import java.io.IOException;
 
 public class ConnectorsSecretary extends AAppNetCoopObjectThread {
     private Message message = null;
@@ -20,17 +21,29 @@ public class ConnectorsSecretary extends AAppNetCoopObjectThread {
             return;
         }
 
-        IAbility ability = getApp().getAbility(message.getAbilityID());
+        IAbility ability = getApp().getAbility(message.getAbilityId());
 
-        switch (message.getType()) {
-            case REQUEST:
-                getApp().addDevice(message.getDestination());
+        try {
+            switch (message.getType()) {
+                case REQUEST:
+                    Message reply = new Message(
+                            message.getSourceId(),
+                            message.getDestinationId(),
+                            Message.Type.REPLY,
+                            message.getAbilityId(),
+                            ability.makeRequest(message.getData()));
 
-                getConnector().send(new Message(message.getSource(), message.getDestination(), Message.Type.REPLY, ability.getId(), ability.make(new byte[])));
-                break;
-            case REPLY:
-                // TODO do presenteru dat
-                break;
+
+                    getConnector().send(reply);
+                    break;
+                case REPLY:
+                    // TODO do presenteru dat
+                    break;
+            }
+        } catch(IOException e){
+            e.printStackTrace();
+
+            DebugPrinter.print("warning", "ConnectorsSecretary - execute ability");
         }
     }
 }
