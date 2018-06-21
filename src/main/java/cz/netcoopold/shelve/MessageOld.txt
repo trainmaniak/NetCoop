@@ -1,0 +1,38 @@
+package cz.netcoop;
+
+import IAbility;
+
+public class MessageOld {
+    public enum Type {
+        QUERY,
+        REPLY
+    }
+
+    private Type type;
+    private IAbility abilityId;
+    private String data;
+
+    public IAbility getAbility() {
+        return abilityId;
+    }
+
+    public MessageOld(IAbility abilityId, String data) {
+        this.abilityId = abilityId;
+        this.data = data;
+    }
+
+    public static class Builder {
+        public static byte[] build(MessageOld messageOld) {
+            byte[] result = new byte[256];
+
+            result[0] = (byte) messageOld.type.ordinal();
+            result[1] = messageOld.abilityId.getId();
+
+            messageOld.abilityId.request();
+        }
+
+        public static MessageOld parse(byte[] message) {
+
+        }
+    }
+}

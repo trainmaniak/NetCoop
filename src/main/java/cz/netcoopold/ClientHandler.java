@@ -1,8 +1,8 @@
-package cz.netcoop;
+package cz.netcoopold;
 
-import cz.netcoop.devices.IDevice;
+import cz.netcoopold.abilities.Ping;
+import cz.netcoopold.devices.IDevice;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,8 +22,9 @@ public class ClientHandler extends AAppNetCoopObjectThread {
         return actionBuff.get(0);
     }
 
-    public void addAction() {
-
+    public void addAction(byte abilityID, byte[] data) {
+        actionBuff.add(new ActionHandler(new Ping(), data));
+        // TODO opravit !!! ability se musi najit podle ID
     }
 
     @Override

@@ -1,22 +1,19 @@
-package cz.netcoop;
+package cz.netcoopold;
 
-import cz.netcoop.abilities.IAbility;
+import cz.netcoopold.abilities.IAbility;
 
 import java.time.LocalDateTime;
 
 public class ActionHandler {
     private IAbility ability;
+    private byte[] data = null;
 
     private boolean requestDone = false;
     private LocalDateTime timeStamp = null;
-    private byte[] response = null;
 
-    public ActionHandler(IAbility ability) {
+    public ActionHandler(IAbility ability, byte[] data) {
         this.ability = ability;
-    }
-
-    public void setResponse(byte[] response) {
-        this.response = response;
+        this.data = data;
     }
 
     public byte[] getRequest() {

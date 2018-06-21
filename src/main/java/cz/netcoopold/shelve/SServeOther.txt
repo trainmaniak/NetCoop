@@ -1,0 +1,30 @@
+package cz.netcoop.servingdaemon;
+
+import cz.netcoop.*;
+import Connector;
+import ConnectionException;
+
+import java.io.IOException;
+
+public class SServeOther extends AServeDaemon {
+
+    private void foo() {
+
+    }
+
+    @Override
+    public void run() {
+        while (true) {
+            try {
+                Connector conn = getConnector();
+
+                MessageOld messageOld = conn.receive(conn.getSessionList().get(0).getPortOther());
+
+                //IDevice destinationId = ((AppNetCoopServer)getAppNetCoop()).getRouter().getDestinationDevice(messageOld);
+                //conn.send(conn.getSession(destinationId).getPortOther(), messageOld);
+            } catch (IOException | ConnectionException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}

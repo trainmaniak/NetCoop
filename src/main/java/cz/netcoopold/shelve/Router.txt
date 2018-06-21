@@ -1,0 +1,37 @@
+package cz.netcoop;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Router {
+    //private List<IDevice> deviceList;
+
+    private List<Message> messageBuffer = new ArrayList<>();
+
+    /*
+    public Router(List<IDevice> deviceList) {
+        this.deviceList = deviceList;
+    }*/
+
+    /*
+    public IDevice getDestinationDevice(Message messageOld) {
+        return messageOld.destinationId;
+    }
+    */
+
+    /*
+    public void bufferAdd(Message messageOld) {
+        messageBuffer.add(messageOld);
+    }
+
+    public Message bufferGet(Session caller) {
+        for (Message messageOld : messageBuffer) {
+            if (messageOld.destinationId == caller.getDevice()) {
+                messageBuffer.remove(messageOld);
+                return messageOld;
+            }
+        }
+
+        return null;
+    }
+}
